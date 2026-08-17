@@ -9,7 +9,22 @@ _LOGGER = logging.getLogger(__name__)
 
 DESCRIPTION = "Skrypt HTML dla dawnego systemu ZM GOAP (c-trace)."
 URL = "https://web.c-trace.de"
-TITLE = "C-Trace (HTML) PL"
+TITLE = "ZM GOAP Poznań (C-Trace)"
+
+TEST_CASES = {
+    "Aleksandrowo 1": {
+        "service": "zmgoappoznan",
+        "ort": "ALEKSANDROWO",
+        "strasse": "ALEKSANDROWO",
+        "hausnummer": "4"
+    },
+    "Zielonka 1": {
+        "service": "zmgoappoznan",
+        "ort": "ZIELONKA",
+        "strasse": "ZIELONKA",
+        "hausnummer": "1"
+    }
+}
 
 class Source:
     def __init__(self, service, ort, strasse, hausnummer):
