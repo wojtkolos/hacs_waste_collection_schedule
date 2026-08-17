@@ -21,17 +21,12 @@ class Source:
     def fetch(self):
         session = requests.Session()
         
-        # 1. Wejście na stronę główną, aby serwer wygenerował w URL token sesji (np. /(S(...))/)
         base_url = f"https://web.c-trace.de/{self._service}-abfallkalender/kalendarzodpadow"
         
-        # allow_redirects=True sprawia, że requests podąży za przekierowaniem 302 do tokenizowanego URL
         response_get = session.get(base_url, allow_redirects=True)
         response_get.encoding = 'utf-8'
-        
-        # Łapiemy nowy URL (z tokenem), na który będziemy wysyłać formularz
         current_url = response_get.url
         
-        # 2. Wysłanie żądania POST z parametrami (dokładnie takimi, jak w HTML)
         payload = {
             "ort": self._ort,
             "strasse": self._strasse,
@@ -45,11 +40,9 @@ class Source:
         response_post = session.post(current_url, data=payload)
         response_post.encoding = 'utf-8'
         
-        # 3. Parsowanie zwróconego HTML
         soup = BeautifulSoup(response_post.text, "html.parser")
         entries = []
         
-        # Wyszukujemy wszystkie kafelki z kalendarzem
         plans = soup.find_all("div", class_="plan")
         
         for plan in plans:
@@ -59,7 +52,6 @@ class Source:
             
             waste_type = tour_div.text.strip()
             
-            # Mapowanie skrótów na pełne nazwy i ikony
             icon = "mdi:trash-can"
             if waste_type == "ZM":
                 waste_name = "Zmieszane"
@@ -88,7 +80,6 @@ class Source:
                 
             for li in termine_ul.find_all("li"):
                 date_str = li.text.strip()
-                # Używamy wyrażenia regularnego, żeby wyciągnąć samą datę z formatu "pt., 28.08.2026"
                 match = re.search(r'\d{2}\.\d{2}\.\d{4}', date_str)
                 if match:
                     parsed_date = datetime.datetime.strptime(match.group(), "%d.%m.%Y").date()
